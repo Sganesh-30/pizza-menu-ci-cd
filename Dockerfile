@@ -6,7 +6,10 @@ WORKDIR /app
 
 # Copy package.json and install dependencies
 COPY package.json package-lock.json ./
-RUN npm install --only=production
+RUN npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm install --only=production
+
 
 # Copy the rest of the app files
 COPY . .
@@ -19,3 +22,5 @@ RUN npm install -g serve
 
 # Set the default command to serve the app
 CMD ["serve", "-s", "build", "-l", "3000"]
+
+
