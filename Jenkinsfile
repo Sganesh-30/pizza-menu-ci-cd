@@ -47,21 +47,23 @@ pipeline {
                 }
             }
         }
-        stage('Update Image for Kubernetes') {
+        stage('Update Kubernetes Manifest') {
             steps {
                 script {
                     def newImageTag = "${GIT_COMMIT}"
-                    bat """
-                    sed -i 's|image: sganesh3010/pizza-app:.*|image: sganesh3010/pizza-app:${newImageTag}|' manifests/deployment.yaml
-                    git config --global user.email "jenkins@example.com"
-                    git config --global user.name "Jenkins"
-                    git add manifests/deployment.yaml
+                    powershell """
+                    git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
+                    (Get-Content kubernetes/deployment.yaml) -replace 'image: sganesh3010/pizza-app:.*', 'image: sganesh3010/pizza-app:${newImageTag}' | Set-Content kubernetes/deployment.yaml
+                    git config --global user.email "ganeshsg430@gmail.com"
+                    git config --global user.name "Ganesh"
+                    git add kubernetes/deployment.yaml
                     git commit -m "Updated image tag to ${newImageTag}"
                     git push origin feature/enabling-cicd
                     """
                 }
             }
         }
+
         stage('Create PR for Review') {
             steps {
                 script {
