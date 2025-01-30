@@ -1,13 +1,21 @@
+# Use Node.js as base image
 FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Copy package.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install --only=production
 
-RUN npm install 
-
+# Copy the rest of the app files
 COPY . .
 
-EXPOSE 3000
+# Build the React app
+RUN npm run build
 
-CMD ["npm", "start"]
+# Install `serve` to serve static files
+RUN npm install -g serve
+
+# Set the default command to serve the app
+CMD ["serve", "-s", "build", "-l", "3000"]
