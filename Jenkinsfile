@@ -47,11 +47,5 @@ pipeline {
                 }
             }
         }
-        stage('Deploying Container') {
-            steps {
-                bat 'docker pull sganesh3010/pizza-app:%GIT_COMMIT%'
-                bat 'docker run -d --name pizzashop -p 3000:3000 sganesh3010/pizza-app:%GIT_COMMIT%'
-            }
-        }
     }
 }
