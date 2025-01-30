@@ -52,18 +52,22 @@ pipeline {
         stage('Update Kubernetes Manifest') {
             steps {
                 script {
-                    def newImageTag = "${GIT_COMMIT}"
-                    powershell """
-                    git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
-                    cd pizza-menu-gitops-argocd
-                    git checkout feature/enabling-cicd
-                    (Get-Content kubernetes/deployment.yaml) -replace 'image: sganesh3010/pizza-app:.*', 'image: sganesh3010/pizza-app:${newImageTag}' | Set-Content kubernetes/deployment.yaml
-                    git config --global user.email "ganeshsg430@gmail.com"
-                    git config --global user.name "Ganesh"
-                    git add kubernetes/deployment.yaml
-                    git commit -m "Updated image tag to ${newImageTag}"
-                    git push origin feature/enabling-cicd
-                    """
+                   def newImageTag = "${GIT_COMMIT}"
+                   powershell """
+                   if (Test-Path 'pizza-menu-gitops-argocd') {
+                        Remove-Item -Recurse -Force 'pizza-menu-gitops-argocd'
+                    }
+                   git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
+                   cd pizza-menu-gitops-argocd
+                   git fetch origin
+                   git checkout feature/enabling-cicd || git checkout -b feature/enabling-cicd origin/feature/enabling-cicd
+                   (Get-Content kubernetes/deployment.yaml) -replace 'image: sganesh3010/pizza-app:.*', 'image: sganesh3010/pizza-app:${newImageTag}' | Set-Content kubernetes/deployment.yaml
+                   git config --global user.email "ganeshsg430@gmail.com"
+                   git config --global user.name "Ganesh"
+                   git add kubernetes/deployment.yaml
+                   git commit -m "Updated image tag to ${newImageTag}"
+                   git push origin feature/enabling-cicd
+                   """
                 }
             }
         }
