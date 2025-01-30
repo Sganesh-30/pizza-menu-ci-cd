@@ -55,6 +55,8 @@ pipeline {
                     def newImageTag = "${GIT_COMMIT}"
                     powershell """
                     git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
+                    cd pizza-menu-gitops-argocd
+                    git checkout feature/enabling-cicd
                     (Get-Content kubernetes/deployment.yaml) -replace 'image: sganesh3010/pizza-app:.*', 'image: sganesh3010/pizza-app:${newImageTag}' | Set-Content kubernetes/deployment.yaml
                     git config --global user.email "ganeshsg430@gmail.com"
                     git config --global user.name "Ganesh"
