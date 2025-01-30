@@ -72,7 +72,7 @@ function Pizza({ pizzaObj }) {
 function Header() {
   return (
     <header className="header">
-      <h1>Fast Bhanu Pizza Co.</h1>
+      <h1>Fast Ganesh Pizza Co.</h1>
     </header>
   );
 }
