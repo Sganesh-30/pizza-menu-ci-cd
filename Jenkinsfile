@@ -49,36 +49,18 @@ pipeline {
                 }
             }
         }
-        stage('Update Kubernetes Manifest') {
-            steps {
-                script {
-                   def newImageTag = "${GIT_COMMIT}"
-                   powershell """
-                   if (Test-Path 'pizza-menu-gitops-argocd') {
-                        Remove-Item -Recurse -Force 'pizza-menu-gitops-argocd'
-                    }
-                   git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
-                   cd pizza-menu-gitops-argocd
-                   git fetch origin
-                   git checkout feature/enabling-cicd || git checkout -b feature/enabling-cicd origin/feature/enabling-cicd
-                   (Get-Content kubernetes/deployment.yaml) -replace 'image: sganesh3010/pizza-app:.*', 'image: sganesh3010/pizza-app:${newImageTag}' | Set-Content kubernetes/deployment.yaml
-                   git config --global user.email "ganeshsg430@gmail.com"
-                   git config --global user.name "Ganesh"
-                   git add kubernetes/deployment.yaml
-                   git commit -m "Updated image tag to ${newImageTag}"
-                   git push origin feature/enabling-cicd
-                   """
-                }
-            }
-        }
-
-        stage('Create PR for Review') {
-            steps {
-                script {
-                    bat """
-                    gh pr create --title 'Deploy Feature Branch' --body 'Auto-generated PR for deployment' --base main --head feature/enabling-cicd
-                    """
-                }
+        stage('Update Image in K8'){
+            steps{
+                bat'''
+                rm -rf /pizza-menu-gitops-argocd/kubernetes
+                https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
+                (Get-Content kubernetes/deployment.yaml) -replace 'image: .*', 'image: ' + "sganesh3010/pizza-app:%GIT_COMMIT%" | Set-Content kubernetes/deployment.yaml
+                 git config --global user.email "ganeshsg430@gmail.com"
+                 git config --global user.name "Ganesh"
+                 git add deployment.yaml
+                 git commit -m "Update image to ganesh3010/pizza-app:%GIT_COMMIT%"
+                 git push origin main
+                '''
             }
         }
     }
