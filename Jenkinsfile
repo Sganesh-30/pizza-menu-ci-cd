@@ -71,6 +71,8 @@ pipeline {
                     powershell -Command "& { (Get-Content pizza-menu-gitops-argocd\\kubernetes\\deployment.yaml) -replace 'image: .*', 'image: sganesh3010/pizza-app:%GIT_COMMIT%' | Set-Content pizza-menu-gitops-argocd\\kubernetes\\deployment.yaml }"
                     if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
+                    echo "sganesh3010/pizza-app:%GIT_COMMIT%"
+
                     echo "File updated successfully!"
                     '''
                 }
