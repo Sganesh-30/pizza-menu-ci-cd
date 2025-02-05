@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pizza-menu
+  namespace: pizza-menu
+  labels:
+    app: pizza-menu
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pizza-menu
+  template:
+    metadata:
+      labels:
+        app: pizza-menu
+    spec:
+      containers:
+        - name: pizza-menu-app
+          image: nginx
+          ports:
+            - containerPort: 3000
