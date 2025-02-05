@@ -84,9 +84,13 @@ pipeline {
                     withCredentials([usernameColonPassword(credentialsId: 'github-acc-creds', variable: 'GITHUB_REPO')]) {
                     bat '''
 
+                    git remote -v
+
                     git ls-remote https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
 
                     git remote set-url origin https://%GITHUB_REPO%@github.com/Sganesh-30/pizza-menu-gitops-argocd.git
+                    
+                    git credential reject https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
 
                     @echo off
                     cd pizza-menu-gitops-argocd\\kubernetes
