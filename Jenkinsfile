@@ -58,7 +58,7 @@ pipeline {
                     bat '''
 
                     echo "Updating deployment.yaml with new image tag..."
-                    powershell -Command "& { (Get-Content pizza-menu-ci-cd\\kubernetes\\deployment.yaml) -replace 'image: .*', 'image: sganesh3010/pizza-app:%GIT_COMMIT%' | Set-Content pizza-menu-ci-cd\\kubernetes\\deployment.yaml }"
+                    powershell -Command "& { (Get-Content pizza-menu-ci-cd\\kubernetes\\deployment.yaml) -replace 'image: .*', 'image: sganesh3010/pizza-app:%GIT_COMMIT%' | Set-Content kubernetes\\deployment.yaml }"
                     if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
                     echo "sganesh3010/pizza-app:%GIT_COMMIT%"
@@ -75,7 +75,7 @@ pipeline {
                     bat '''
 
                     @echo off
-                    cd pizza-menu-ci-cd\\kubernetes
+                    cd kubernetes/
 
                     echo "Configuring Git..."
                     git config --global user.email "ganeshsg430@gmail.com"
