@@ -56,19 +56,9 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    @echo off
-                    echo "Cleaning up existing repository..."
-                    if exist pizza-menu-gitops-argocd (
-                        rmdir /s /q pizza-menu-gitops-argocd
-                        echo "Deleted existing repository."
-                    )
-
-                    echo "Cloning repository..."
-                    git clone https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git pizza-menu-gitops-argocd
-                    if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
                     echo "Updating deployment.yaml with new image tag..."
-                    powershell -Command "& { (Get-Content pizza-menu-gitops-argocd\\kubernetes\\deployment.yaml) -replace 'image: .*', 'image: sganesh3010/pizza-app:%GIT_COMMIT%' | Set-Content pizza-menu-gitops-argocd\\kubernetes\\deployment.yaml }"
+                    powershell -Command "& { (Get-Content pizza-menu-ci-cd\\kubernetes\\deployment.yaml) -replace 'image: .*', 'image: sganesh3010/pizza-app:%GIT_COMMIT%' | Set-Content pizza-menu-gitops-argocd\\kubernetes\\deployment.yaml }"
                     if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
 
                     echo "sganesh3010/pizza-app:%GIT_COMMIT%"
@@ -81,19 +71,11 @@ pipeline {
         stage('Commit and Push') {
             steps {
                 script {
-                    withCredentials([usernameColonPassword(credentialsId: 'github-acc-creds', variable: 'GITHUB_REPO')]) {
+        
                     bat '''
 
-                    git remote -v
-
-                    git ls-remote https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
-
-                    git remote set-url origin https://%GITHUB_REPO%@github.com/Sganesh-30/pizza-menu-gitops-argocd.git
-                    
-                    git credential reject https://github.com/Sganesh-30/pizza-menu-gitops-argocd.git
-
                     @echo off
-                    cd pizza-menu-gitops-argocd\\kubernetes
+                    cd pizza-menu-ci-cd\\kubernetes
 
                     echo "Configuring Git..."
                     git config --global user.email "ganeshsg430@gmail.com"
