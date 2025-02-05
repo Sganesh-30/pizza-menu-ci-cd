@@ -100,10 +100,8 @@ pipeline {
 
                     echo "Changes pushed successfully!"
                     '''
-                    }
                 }
             }
         }
-
     }
 }
