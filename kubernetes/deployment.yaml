@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: pizza-menu-app
-          image: nginx
+          image: nginx:latest
           ports:
             - containerPort: 3000
